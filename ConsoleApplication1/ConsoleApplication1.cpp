@@ -67,7 +67,7 @@ typedef winampVisHeader*(__cdecl* WinampVisGetHeader)();
 /// <remarks>https://learn.microsoft.com/en-us/windows/win32/dlls/using-run-time-dynamic-linking</remarks>
 int main()
 {
-    auto handleLib = LoadLibraryEx(L"D:\\Temp\\monkey\\vis_monkey.dll", NULL, NULL);
+    auto handleLib = LoadLibraryEx(L"D:\\Temp\\monkey\\vis_monkey.4dll", NULL, NULL);
     if (handleLib == NULL)
     {
         auto dwError = GetLastError();
@@ -84,7 +84,7 @@ int main()
             (LPTSTR)&lpMsgBuf,
             0, NULL);
 
-        wprintf(L"%s", (LPTSTR)lpMsgBuf);
+        std::wcout << (LPTSTR)lpMsgBuf << std::endl;
     }
     else
     {
