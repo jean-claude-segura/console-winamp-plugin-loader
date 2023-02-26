@@ -67,7 +67,10 @@ typedef winampVisHeader*(__cdecl* WinampVisGetHeader)();
 /// <remarks>https://learn.microsoft.com/en-us/windows/win32/dlls/using-run-time-dynamic-linking</remarks>
 int main()
 {
-    auto handleLib = LoadLibraryEx(L"D:\\Temp\\monkey\\vis_monkey.4dll", NULL, NULL);
+    auto handleLib = LoadLibraryEx(L"C:\\Winamp\\Plugins\\monkey\\vis_monkey.dll", NULL, NULL);
+    //auto handleLib = LoadLibraryEx(L"C:\\Winamp\\Plugins\\LHDance\\LHDance\\vis_lhd.dll", NULL, NULL);
+    //auto handleLib = LoadLibraryEx(L"C:\\Winamp\\Plugins\\others\\vis_milk2.dll", NULL, NULL);
+    //auto handleLib = LoadLibraryEx(L"C:\\Winamp\\Plugins\\vis_rave.dll", NULL, NULL);
     if (handleLib == NULL)
     {
         auto dwError = GetLastError();
@@ -90,7 +93,7 @@ int main()
     {
         WinampVisGetHeader lpFunc = (WinampVisGetHeader) GetProcAddress(handleLib, "winampVisGetHeader");
         auto lpModule = lpFunc();
-        auto header = lpModule->getModule(0);
+        lpWinampVisModule = lpModule->getModule(0);
         /*auto hWnd = CreateWindow(
             L"Main",        // name of window class 
             L"Titre",            // title-bar string 
@@ -108,9 +111,12 @@ int main()
             return FALSE;
 
         header->hwndParent = hWnd;*/
-        header->Config(header);
-        header->Init(header);
-        header->Quit(header);
+        auto curHndl = GetCurrentProcess();
+        lpWinampVisModule->hwndParent = NULL;
+        lpWinampVisModule->hDllInstance = handleLib;
+        auto resConfig = lpWinampVisModule->Config(lpWinampVisModule);
+        auto resInit = lpWinampVisModule->Init(lpWinampVisModule);
+        lpWinampVisModule->Quit(lpWinampVisModule);
 
         FreeLibrary(handleLib);
     }
